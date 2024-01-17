@@ -68,14 +68,20 @@ function App() {
     </div>
     <button type="button" onClick={()=>handleSubmit()}>Enviar</button> */}
 
+
+
+
+
     <h3>Lista de compras</h3>
     <label>Articulo</label>
-    <input type="text" onBlur={(e)=>handleAddItem(e.target.value)}></input>
+        <input type="text" onBlur={(e)=>handleAddItem(e.target.value)}></input>
       
       <p>Items de la compra</p>
       {compras.map((data,index)=>{
         return(
           <li key={index}>{data}</li>
+
+        
         )
       })}
     </>
