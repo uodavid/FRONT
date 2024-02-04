@@ -1,6 +1,10 @@
 import React from 'react';
 
-const HomePage = () => {
+const HomePage = (props) => {
+
+    const {emailProp} =props;
+
+    React.useEffect
     return(
         <>
         Home

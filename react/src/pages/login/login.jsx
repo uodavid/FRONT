@@ -1,34 +1,89 @@
 import React, { useEffect, useState } from 'react';
 import './login.css'
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import HomePage from '../home/home';
+import ClientesPage from '../clientes/clientes';
+import axios from 'axios';
+import { BASE_URL } from '../../config';
+import * as loginService from '../../services/login/loginService';
+import { setLoginAction } from '../../redux/slices/authSlice'; 
+import { useDispatch, useSelector } from 'react-redux';
 const LoginPage = () => {
 
+    const dispatch = useDispatch();
+    const authStore = useSelector(state=> state.authStore)
+    const location = useLocation();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [clave, setClave] = useState("");
 
-    //useEffect(()=>{}) //ciclo de vida, se le conoce como fase de actualización o constante de monitoreo, se va a ejecutar siempre, cada que detecte que hay un cambio en un Hook, sin importar el hook que sea 
-    //useEffect(()=>{},[]) //ciclo de vida, se le conoce como fase de montaje, se ejecuta una sola vez cuando carga el componente, sin importar que los demas hooks states cambien de estado
-    //useEffect(()=>{},[usuario]) //ciclo de vida, se le conoce como fase de actualización, se ejecuta cuando arga el componente y cuando detecta que hay un cambio en el hook state que tiene como dependencia
+    //useEffect(()=>{}) // Ciclo de vida, se le conoce como fase de actualización o constante monitoreo, se va a ejecutar siempre, cada que detecte que hay un cambio en un hook, sin importar el hook que sea.
+    //useEffect(()=>{},[]) // Ciclo de vida, se le conoce como fase de montaje, se ejecuta una sola vez cuando carga el componente, sin importar que los demás hooks states cambien de estado.
+    //useEffect(()=>{},[usuario]) // Ciclo de vida, se le conoce como fase de actualización, se ejecuta cuando carga el componente y cuando detecta que hay un cambio, en el hook state que tiene como dependencia.
 
-    //useEffect(()=>{
-    //    console.log("Mostrando Mensaje")
-    //})
-
-    //useEffect(()=>{
-    //    console.log("Mostrando Mensaje")
-    //},[])
-
-    //useEffect(()=>{
-    //    console.log("Mostrando Mensaje")
-    //},[email])
+    // useEffect(()=>{
+    //     console.log("Mostrando mensaje")
+    // })
 
     useEffect(()=>{
-        return () => {
-            console.log("Destruyendo el Componente")
-        }
+        console.log("Mostrando Location", location)
     },[])
-    
+
+    useEffect(()=>{
+        console.log(authStore)
+        if(authStore && authStore.jwt){
+            
+    }
+        
+    },[authStore])
+
+    // useEffect(()=>{
+    //     console.log("Mostrando mensaje")
+    // },[email])
+
+    // useEffect(()=>{
+    //     return () => {
+    //         console.log("Destruyendo el componente")
+    //     } 
+    // },[])
+
+    // const handleLogin = async () => {
+    //     try {
+    //         const payload = {
+    //             correo: email,
+    //             clave: clave
+    //         }
+    //         const {data} = await axios.post(`${BASE_URL}/usuarios/login`, payload);
+    //         console.log(data);
+    //         localStorage.setItem('jwt_token', JSON.stringify(data.jwt))
+            
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+
+    const handleLogin = async () => {
+        try {
+            const payload = {
+                correo: email,
+                clave: clave
+            }
+            const result = await loginService.intentLogin(payload);
+            localStorage.setItem('jwt_token', JSON.stringify(result))
+            dispatchEvent(setLoginAction(result))
+            const nextRoute = location.state.pathname;
+            console.log(nextRoute)
+        if(nextRoute){
+            navigate(nextRoute);
+        }else{
+            navigate("/");
+        }
+            
+        } catch (error) {
+            console.log(error)
+        }
+        
+    }
 
     return(
         <section style={{height: '100vh'}}>
@@ -50,7 +105,7 @@ const LoginPage = () => {
                                 </div>
 
                                 <div className="mb-3">
-                                    <button type="button" onClick={()=>navigate("/")} className='btn btn-success'>Enviar</button>
+                                    <button type="button" onClick={()=>handleLogin()} className='btn btn-success'>Enviar</button>
                                 </div>
 
                             </div>
@@ -58,6 +113,8 @@ const LoginPage = () => {
                     </div>
                 </div>
             </div>
+        <HomePage emailProp={email}/>
+        <ClientesPage emailProp={email} />
         </section>
     )
 }

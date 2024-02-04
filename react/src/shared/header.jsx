@@ -3,16 +3,19 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
-
-
 const HeaderComponent = () => {
+    //Operacion de lectura de redux - opcion 1
+  const name2 = useSelector(state => state.demoStore.name)
+  //Operacion de lectura de redux - opcion 2
+  const {name, email, phone} = useSelector(state => state.demoStore)
     return (
         
         
             <Navbar expand="lg" className="bg-body-tertiary">
               <Container>
-                <link to = "/" className="navbar-brand">Pedidos Restaurante</link>
+                <Link to = "/" className="navbar-brand">Pedidos Restaurante | {name}</Link>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="me-auto">
